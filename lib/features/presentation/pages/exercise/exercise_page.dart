@@ -19,7 +19,7 @@ class ExercisePage extends StatefulWidget {
 class _ExercisePageState extends State<ExercisePage> {
   PageController pageController = PageController();
   var pageIndex = 0;
-  var initSeconds = 35000;
+  var initSeconds = 36000;
   bool isPlaying = false;
   bool isPaused = false;
   bool isLastPage = false;
@@ -28,9 +28,13 @@ class _ExercisePageState extends State<ExercisePage> {
   // Timer section
 
   late StopWatchTimer _stopWatchTimer;
+
+  // Start timer.
+
   @override
   void initState() {
     initTimer();
+   
     super.initState();
   }
 
@@ -71,9 +75,9 @@ class _ExercisePageState extends State<ExercisePage> {
   }
 
   @override
-  void dispose() {
-    _stopWatchTimer.dispose();
+  void dispose() async{
     super.dispose();
+   await _stopWatchTimer.dispose();
   }
 
   int getNextPageIndex(int currentPageIndex) {
@@ -92,11 +96,12 @@ class _ExercisePageState extends State<ExercisePage> {
 
   @override
   Widget build(BuildContext context) {
+    
     return StreamBuilder<int>(
         stream: _stopWatchTimer.secondTime,
-        initialData: initSeconds,
+        initialData: _stopWatchTimer.secondTime.value,
         builder: (context, snapshot) {
-          final value = snapshot.data ?? initSeconds;
+          final value = snapshot.data;
 
           return Scaffold(
             backgroundColor: backgroundColor,
@@ -188,43 +193,48 @@ class _ExercisePageState extends State<ExercisePage> {
                       ],
                     ),
                     Stack(
-                      clipBehavior: Clip.none,
                       alignment: Alignment.center,
+                      clipBehavior: Clip.none ,
                       children: [
-                        Container(
-                          color: orangeColor,
-                          padding: EdgeInsets.all(30),
-                          child: Row(
-                            children: [
-                              GestureDetector(
-                                  onTap: () {
-                                    pageController.previousPage(
-                                        duration: Duration(milliseconds: 400),
-                                        curve: Curves.easeInOut);
-                                  },
-                                  child: Icon(Icons.arrow_back_ios)),
-                              Spacer(),
-                              Expanded(
-                                  flex: 10,
-                                  child: Text(
-                                    exercise.name!,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: primaryColor, fontSize: 18),
-                                  )),
-                              Spacer(),
-                              GestureDetector(
-                                  onTap: () {
-                                    pageController.nextPage(
-                                        duration: Duration(milliseconds: 400),
-                                        curve: Curves.easeInOut);
-                                  },
-                                  child: Icon(Icons.arrow_forward_ios)),
-                            ],
-                          ),
+                        Column(
+                          children: [
+                            Container(
+                              color: orangeColor,
+                              padding: EdgeInsets.all(30),
+                              child: Row(
+                                children: [
+                                  GestureDetector(
+                                      onTap: () {
+                                        pageController.previousPage(
+                                            duration: Duration(milliseconds: 400),
+                                            curve: Curves.easeInOut);
+                                      },
+                                      child: Icon(Icons.arrow_back_ios)),
+                                  Spacer(),
+                                  Expanded(
+                                      flex: 10,
+                                      child: Text(
+                                        exercise.name!,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: primaryColor, fontSize: 18),
+                                      )),
+                                  Spacer(),
+                                  GestureDetector(
+                                      onTap: () {
+                                        pageController.nextPage(
+                                            duration: Duration(milliseconds: 400),
+                                            curve: Curves.easeInOut);
+                                      },
+                                      child: Icon(Icons.arrow_forward_ios)),
+                                ],
+                              ),
+                            ),
+                            sizeVer(25)
+                          ],
                         ),
                         Positioned(
-                          bottom: -25,
+                          bottom: -0,
                           child: InkWell(
                             onTap: () async {
                               final player = AudioPlayer();
@@ -270,7 +280,7 @@ class _ExercisePageState extends State<ExercisePage> {
                         ),
                       ],
                     ),
-                    sizeVer(40),
+                    sizeVer(15),
                     Text(
                       "Target: ${exercise.reps} reps",
                       style: TextStyle(fontSize: 16),

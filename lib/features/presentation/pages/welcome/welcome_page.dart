@@ -1,6 +1,7 @@
 import 'package:butt_and_legs_3_min/constants.dart';
 import 'package:butt_and_legs_3_min/features/presentation/widgets/my_button_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 import '../home/home_page.dart';
 
@@ -9,6 +10,8 @@ class WelcomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var selectedDayBox = Hive.box<int>("selectedDayBox");
+    int selectedDay = selectedDayBox.values.first;
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
@@ -65,7 +68,9 @@ class WelcomePage extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const HomePage(dayIndex: 0,),
+                      builder: (context) => HomePage(
+                        dayIndex: selectedDay,
+                      ),
                     ));
               },
             ),

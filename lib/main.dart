@@ -17,10 +17,14 @@ void main() async {
   Hive.registerAdapter(DayModelAdapter());
 
   await Hive.openBox<DayModel>("daysBox");
+  await Hive.openBox<int>("selectedDayBox");
   var dayBox = Hive.box<DayModel>("daysBox");
+  var selectedDayBox = Hive.box<int>("selectedDayBox");
   if (dayBox.isEmpty) {
     dayBox.addAll(kDaysList);
+    selectedDayBox.add(0);
   }
+
   runApp(const MyApp());
 }
 

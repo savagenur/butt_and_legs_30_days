@@ -31,7 +31,7 @@ class RestPage extends StatefulWidget {
 
 class _RestPageState extends State<RestPage> {
   late int currentValue;
-  int restTime = 15000;
+  int restTime = 16000;
   bool isSaved = false;
   late StopWatchTimer _stopWatchTimer;
   var days = Hive.box<DayModel>("daysBox");
@@ -64,8 +64,16 @@ class _RestPageState extends State<RestPage> {
     );
   }
 
+  setSelectedDay(int selectedDay) {
+    var selectedDayBox = Hive.box<int>("selectedDayBox");
+    selectedDayBox.clear();
+    selectedDayBox.add(selectedDay);
+  }
+
   @override
   Widget build(BuildContext context) {
+    int selectedDay = widget.dayIndex;
+    setSelectedDay(selectedDay);
     return Scaffold(
       backgroundColor: backgroundColor,
       body: StreamBuilder<int>(
@@ -132,7 +140,6 @@ class _RestPageState extends State<RestPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               NumberPicker(
-                                
                                 selectedTextStyle:
                                     TextStyle(color: whiteColor, fontSize: 24),
                                 minValue: 0,
@@ -140,7 +147,9 @@ class _RestPageState extends State<RestPage> {
                                 value: currentValue,
                                 onChanged: (value) {
                                   setState(() {
-                                   isSaved?currentValue=currentValue: currentValue = value;
+                                    isSaved
+                                        ? currentValue = currentValue
+                                        : currentValue = value;
                                   });
                                 },
                               ),
@@ -214,15 +223,12 @@ class _RestPageState extends State<RestPage> {
                                           : "Next",
                                       onTap: () {
                                         widget.isLastExercise
-                                            ? Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
+                                            ? Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
                                                   builder: (context) =>
                                                       HomePage(
-                                                    dayIndex: widget.dayIndex,
+                                                    dayIndex: selectedDay,
                                                   ),
-                                                ),
-                                              )
+                                                ), (route) => false)
                                             : Navigator.pop(context);
                                         isSaved = false;
                                       },
