@@ -1,16 +1,36 @@
 import 'package:butt_and_legs_3_min/constants.dart';
+import 'package:butt_and_legs_3_min/features/data/models/day/day_model.dart';
+import 'package:butt_and_legs_3_min/features/domain/entities/exercise/exercise_entity.dart';
+import 'package:butt_and_legs_3_min/features/presentation/pages/exercise/exercise_page.dart';
 import 'package:butt_and_legs_3_min/features/presentation/widgets/my_button_widget.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
+import '../../../data/models/exercise/exercise_model.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final int dayIndex;
+  const HomePage({super.key, required this.dayIndex});
 
   @override
   State<HomePage> createState() => HomePageState();
 }
 
 class HomePageState extends State<HomePage> {
+  var days = Hive.box<DayModel>("daysBox");
+
+  late int currentDay;
+  bool visionDouble = true;
+  CarouselController scrollController = CarouselController();
+
+  @override
+  void initState() {
+    currentDay = widget.dayIndex;
+    setState(() {});
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,116 +38,62 @@ class HomePageState extends State<HomePage> {
       body: SafeArea(
         child: Column(
           children: [
-            CarouselSlider(
-              items: [
-                Padding(
-                  padding: EdgeInsets.only(top: 10),
-                  child: Container(
-                      alignment: Alignment.center,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          color: orangeColor,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Text(
-                        "Day 1",
-                        style: TextStyle(
-                            color: whiteColor,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      )),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 10),
-                  child: Container(
-                      alignment: Alignment.center,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          color: orangeColor,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Text(
-                        "Day 2",
-                        style: TextStyle(
-                            color: whiteColor,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      )),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 10),
-                  child: Container(
-                      alignment: Alignment.center,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          color: orangeColor,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Text(
-                        "Day 3",
-                        style: TextStyle(
-                            color: whiteColor,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      )),
-                ),
-              ],
-              options: CarouselOptions(
-                  height: 150,
-                  aspectRatio: 2.0,
-                  enlargeCenterPage: true,
-                  enableInfiniteScroll: false),
-            ),
+            buildCarouselSlider(),
             sizeVer(30),
             Padding(
               padding: EdgeInsets.all(20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Row(
+                  const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Exercises",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          sizeVer(10),
-                          ...List.generate(
-                              10,
-                              (index) => Padding(
-                                  padding: EdgeInsets.only(top: 15),
-                                  child: Text(
-                                    "Leg Raise Plank Right",
-                                    style: TextStyle(fontSize: 16),
-                                  )))
-                        ],
+                      Text(
+                        "Exercises",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            "Target",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          sizeVer(10),
-                          ...List.generate(
-                              10,
-                              (index) => Padding(
-                                  padding: EdgeInsets.only(top: 15),
-                                  child: Text(
-                                    "10 Reps",
-                                    style: TextStyle(fontSize: 16),
-                                  )))
-                        ],
+                      Text(
+                        "Target",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ],
+                  ),
+                  sizeVer(10),
+                  AnimatedOpacity(
+                    opacity: visionDouble ? 1 : 0,
+                    duration: Duration(milliseconds: 150),
+                    child: SingleChildScrollView(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: days.getAt(currentDay)!.exercises!.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          var exercises = days.getAt(currentDay)!.exercises!;
+                          return Padding(
+                            padding: EdgeInsets.only(top: 15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "${exercises[index].name}",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                                Text(
+                                  "${exercises[index].reps} reps",
+                                  style: TextStyle(fontSize: 16),
+                                )
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -137,10 +103,56 @@ class HomePageState extends State<HomePage> {
       ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(20),
-        child: MyButtonWidget(text: "Start",onTap: () {
-                        
-                      },backgroundColor: primaryColor,paddingAll: 15,),
+        child: MyButtonWidget(
+          text: "Start",
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ExercisePage(
+                    dayModel: days.getAt(currentDay)!,
+                  ),
+                ));
+          },
+          backgroundColor: primaryColor,
+          paddingAll: 15,
+        ),
       ),
+    );
+  }
+
+  CarouselSlider buildCarouselSlider() {
+    return CarouselSlider(
+      carouselController: scrollController,
+      items: List.generate(days.length, (index) {
+        int day = days.getAt(index)!.day!;
+        return Padding(
+          padding: EdgeInsets.only(top: 10),
+          child: Container(
+              alignment: Alignment.center,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  color: orangeColor, borderRadius: BorderRadius.circular(20)),
+              child: Text(
+                "Day $day",
+                style: TextStyle(
+                    color: whiteColor,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold),
+              )),
+        );
+      }),
+      options: CarouselOptions(
+        initialPage: currentDay,
+          height: 150,
+          onScrolled: (value) {
+            setState(() {
+              currentDay = value!.round();
+            });
+          },
+          aspectRatio: 2.0,
+          enlargeCenterPage: true,
+          enableInfiniteScroll: false),
     );
   }
 }
