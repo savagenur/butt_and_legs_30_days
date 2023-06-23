@@ -18,14 +18,17 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  var days = Hive.box<DayModel>("daysBox");
-
+  Box<DayModel> days = Hive.box<DayModel>("daysBox");
   late int currentDay;
   bool visionDouble = true;
   CarouselController scrollController = CarouselController();
-
+  
   @override
   void initState() {
+    days.listenable().addListener(() {
+      setState(() {});
+    });
+
     currentDay = widget.dayIndex;
     setState(() {});
     super.initState();
@@ -143,7 +146,7 @@ class HomePageState extends State<HomePage> {
         );
       }),
       options: CarouselOptions(
-        initialPage: currentDay,
+          initialPage: currentDay,
           height: 150,
           onScrolled: (value) {
             setState(() {

@@ -2,8 +2,6 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:butt_and_legs_3_min/constants.dart';
 import 'package:butt_and_legs_3_min/features/data/models/day/day_model.dart';
-import 'package:butt_and_legs_3_min/features/data/models/exercise/exercise_model.dart';
-import 'package:butt_and_legs_3_min/features/domain/entities/day/day_entity.dart';
 import 'package:butt_and_legs_3_min/features/presentation/pages/rest/rest_page.dart';
 import 'package:flutter/material.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
@@ -19,7 +17,7 @@ class ExercisePage extends StatefulWidget {
 class _ExercisePageState extends State<ExercisePage> {
   PageController pageController = PageController();
   var pageIndex = 0;
-  var initSeconds = 36000;
+  var initSeconds = 1000;
   bool isPlaying = false;
   bool isPaused = false;
   bool isLastPage = false;
@@ -34,7 +32,6 @@ class _ExercisePageState extends State<ExercisePage> {
   @override
   void initState() {
     initTimer();
-   
     super.initState();
   }
 
@@ -75,9 +72,9 @@ class _ExercisePageState extends State<ExercisePage> {
   }
 
   @override
-  void dispose() async{
+  void dispose() async {
     super.dispose();
-   await _stopWatchTimer.dispose();
+    await _stopWatchTimer.dispose();
   }
 
   int getNextPageIndex(int currentPageIndex) {
@@ -96,7 +93,6 @@ class _ExercisePageState extends State<ExercisePage> {
 
   @override
   Widget build(BuildContext context) {
-    
     return StreamBuilder<int>(
         stream: _stopWatchTimer.secondTime,
         initialData: _stopWatchTimer.secondTime.value,
@@ -194,7 +190,7 @@ class _ExercisePageState extends State<ExercisePage> {
                     ),
                     Stack(
                       alignment: Alignment.center,
-                      clipBehavior: Clip.none ,
+                      clipBehavior: Clip.none,
                       children: [
                         Column(
                           children: [
@@ -206,7 +202,8 @@ class _ExercisePageState extends State<ExercisePage> {
                                   GestureDetector(
                                       onTap: () {
                                         pageController.previousPage(
-                                            duration: Duration(milliseconds: 400),
+                                            duration:
+                                                Duration(milliseconds: 400),
                                             curve: Curves.easeInOut);
                                       },
                                       child: Icon(Icons.arrow_back_ios)),
@@ -223,7 +220,8 @@ class _ExercisePageState extends State<ExercisePage> {
                                   GestureDetector(
                                       onTap: () {
                                         pageController.nextPage(
-                                            duration: Duration(milliseconds: 400),
+                                            duration:
+                                                Duration(milliseconds: 400),
                                             curve: Curves.easeInOut);
                                       },
                                       child: Icon(Icons.arrow_forward_ios)),
