@@ -1,7 +1,9 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:butt_and_legs_3_min/constants.dart';
 import 'package:butt_and_legs_3_min/features/data/models/day/day_model.dart';
 import 'package:butt_and_legs_3_min/features/data/models/exercise/exercise_model.dart';
 import 'package:butt_and_legs_3_min/features/domain/entities/exercise/exercise_entity.dart';
+import 'package:butt_and_legs_3_min/features/presentation/pages/well_done/well_done_page.dart';
 import 'package:butt_and_legs_3_min/features/presentation/widgets/my_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -203,9 +205,7 @@ class _RestPageState extends State<RestPage> {
                                                                       1,
                                                                   exercise)));
                                               }
-                                              
 
-                                              
                                               setState(() {
                                                 isSaved = true;
                                               });
@@ -218,18 +218,23 @@ class _RestPageState extends State<RestPage> {
                                       text: widget.isLastExercise
                                           ? "Done"
                                           : "Next",
-                                      onTap: () {
-                                        widget.isLastExercise
-                                            ? Navigator.pushAndRemoveUntil(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      HomePage(
-                                                    dayIndex: selectedDay,
-                                                  ),
-                                                ),
-                                                (route) => false)
-                                            : Navigator.pop(context);
+                                      onTap: () async {
+                                        if (widget.isLastExercise) {
+                                          Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    WellDonePage(),
+                                              ),
+                                              (route) => false);
+                                          final player = AudioPlayer();
+                                          await player.play(AssetSource(
+                                              "mixkit-animated-small-group-applause-523.wav"));
+                                        }
+                                        else{
+                                        Navigator.pop(context);
+
+                                        }
                                         isSaved = false;
                                       },
                                       paddingAll: 15,

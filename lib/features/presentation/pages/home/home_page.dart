@@ -25,13 +25,19 @@ class HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    days.listenable().addListener(() {
-      setState(() {});
-    });
-
     currentDay = widget.dayIndex;
     setState(() {});
     super.initState();
+  }
+
+  dayListenController() {
+    days.listenable().addListener(() {
+      setState(() {});
+    });
+  }
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
