@@ -64,16 +64,10 @@ class _RestPageState extends State<RestPage> {
     );
   }
 
-  setSelectedDay(int selectedDay) {
-    var selectedDayBox = Hive.box<int>("selectedDayBox");
-    selectedDayBox.clear();
-    selectedDayBox.add(selectedDay);
-  }
-
   @override
   Widget build(BuildContext context) {
     int selectedDay = widget.dayIndex;
-    setSelectedDay(selectedDay);
+
     return Scaffold(
       backgroundColor: backgroundColor,
       body: StreamBuilder<int>(
@@ -209,6 +203,9 @@ class _RestPageState extends State<RestPage> {
                                                                       1,
                                                                   exercise)));
                                               }
+                                              
+
+                                              
                                               setState(() {
                                                 isSaved = true;
                                               });
@@ -223,12 +220,15 @@ class _RestPageState extends State<RestPage> {
                                           : "Next",
                                       onTap: () {
                                         widget.isLastExercise
-                                            ? Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                                            ? Navigator.pushAndRemoveUntil(
+                                                context,
+                                                MaterialPageRoute(
                                                   builder: (context) =>
                                                       HomePage(
                                                     dayIndex: selectedDay,
                                                   ),
-                                                ), (route) => false)
+                                                ),
+                                                (route) => false)
                                             : Navigator.pop(context);
                                         isSaved = false;
                                       },

@@ -22,7 +22,7 @@ class HomePageState extends State<HomePage> {
   late int currentDay;
   bool visionDouble = true;
   CarouselController scrollController = CarouselController();
-  
+
   @override
   void initState() {
     days.listenable().addListener(() {
@@ -109,6 +109,9 @@ class HomePageState extends State<HomePage> {
         child: MyButtonWidget(
           text: "Start",
           onTap: () {
+            Hive.box<int>("selectedDayBox").putAt(0, currentDay);
+            print(Hive.box<int>("selectedDayBox").values);
+
             Navigator.push(
                 context,
                 MaterialPageRoute(

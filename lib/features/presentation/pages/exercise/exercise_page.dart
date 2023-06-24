@@ -256,6 +256,7 @@ class _ExercisePageState extends State<ExercisePage> {
                                 isPlaying = !isPlaying;
                                 isStarting = false;
                               });
+
                             },
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 300),
