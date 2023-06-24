@@ -144,7 +144,7 @@ class HomePageState extends State<HomePage> {
               alignment: Alignment.center,
               width: double.infinity,
               decoration: BoxDecoration(
-                  color: orangeColor, borderRadius: BorderRadius.circular(20)),
+                  color:days.getAt(index)!.isDayDone!?Colors.green: orangeColor, borderRadius: BorderRadius.circular(20)),
               child: Text(
                 "Day $day",
                 style: TextStyle(

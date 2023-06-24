@@ -220,6 +220,11 @@ class _RestPageState extends State<RestPage> {
                                           : "Next",
                                       onTap: () async {
                                         if (widget.isLastExercise) {
+                                          days.putAt(
+                                              widget.dayIndex,
+                                              days
+                                                  .getAt(widget.dayIndex)!
+                                                  .copyWith(isDayDone: true,));
                                           Navigator.pushAndRemoveUntil(
                                               context,
                                               MaterialPageRoute(
@@ -230,10 +235,8 @@ class _RestPageState extends State<RestPage> {
                                           final player = AudioPlayer();
                                           await player.play(AssetSource(
                                               "mixkit-animated-small-group-applause-523.wav"));
-                                        }
-                                        else{
-                                        Navigator.pop(context);
-
+                                        } else {
+                                          Navigator.pop(context);
                                         }
                                         isSaved = false;
                                       },
