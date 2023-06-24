@@ -37,6 +37,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
+        textTheme: TextTheme(
+          bodyLarge: TextStyle(fontFamily: "Rubik"),
+          bodySmall: TextStyle(fontFamily: "Rubik"),
+          bodyMedium: TextStyle(fontFamily: "Rubik"),
+        ),
         primarySwatch: Colors.blue,
       ),
       home: WelcomePage(),
